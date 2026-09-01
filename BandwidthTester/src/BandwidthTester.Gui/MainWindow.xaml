@@ -45,8 +45,8 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
-                                <Button Content="시작" Width="55" Margin="2" Click="BtnRowStart_Click"/>
-                                <Button Content="정지" Width="55" Margin="2" Click="BtnRowStop_Click"/>
+                                <Button Content="시작" Width="55" Margin="2" IsEnabled="{Binding IsNotRunning}" Click="BtnRowStart_Click"/>
+                                <Button Content="정지" Width="55" Margin="2" IsEnabled="{Binding IsRunning}" Click="BtnRowStop_Click"/>
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>

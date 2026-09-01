@@ -54,12 +54,21 @@ public partial class MainWindow : Window
         if (dialog.ShowDialog() != true || dialog.Result is not { } edited)
             return;
 
-        // Rebuild the worker so a fresh BandwidthLimiter/state picks up the new settings.
+        // Rebuild the worker so a fresh BandwidthLimiter/state picks up the new settings,
+        // but keep the row's position in the list (and re-select it) so the edit is visible
+        // in place instead of jumping to the bottom - otherwise it looks like nothing happened,
+        // and the row that shifts up to fill the gap ends up taking start/stop clicks meant
+        // for the edited socket.
+        int index = _rows.IndexOf(row);
         await _manager.RemoveAsync(row.Profile.Id).ConfigureAwait(true);
-        _rows.Remove(row);
         var worker = _manager.Add(edited);
         var newRow = new SocketRowViewModel(worker);
-        _rows.Add(newRow);
+        if (index >= 0)
+            _rows[index] = newRow;
+        else
+            _rows.Add(newRow);
+        gridSockets.SelectedItem = newRow;
+
         if (wasRunning)
             worker.Start();
     }

@@ -36,10 +36,13 @@ public sealed class SocketRowViewModel : INotifyPropertyChanged
     public WorkerStatus Status
     {
         get => _status;
-        private set { _status = value; Raise(); Raise(nameof(IsRunning)); }
+        private set { _status = value; Raise(); Raise(nameof(IsRunning)); Raise(nameof(IsNotRunning)); }
     }
 
     public bool IsRunning => Worker.IsRunning;
+
+    /// <summary>Bound to the row's 시작 button's IsEnabled, so only the valid action is clickable.</summary>
+    public bool IsNotRunning => !Worker.IsRunning;
 
     public long TxTotal { get => _txTotal; private set { _txTotal = value; Raise(); } }
     public long RxTotal { get => _rxTotal; private set { _rxTotal = value; Raise(); } }

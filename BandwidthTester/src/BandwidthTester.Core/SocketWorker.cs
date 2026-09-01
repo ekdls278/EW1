@@ -108,6 +108,12 @@ public sealed class SocketWorker : IAsyncDisposable
     {
         try
         {
+            // _runTask is only assigned after Start() calls SetStatus(Starting), so an
+            // IsRunning-derived UI indicator (e.g. a "start" button's enabled state) would
+            // otherwise stay stale until the first 1-second tick below. Publish once
+            // immediately - by now _runTask is assigned, so IsRunning already reads correctly.
+            PublishStats();
+
             while (!ct.IsCancellationRequested)
             {
                 await Task.Delay(TimeSpan.FromSeconds(1), ct).ConfigureAwait(false);
