@@ -2,7 +2,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using BandwidthTester.Core;
 
-namespace BandwidthTester.Gui;
+namespace BandwidthTester.AvaloniaGui;
 
 /// <summary>Editable row for one header field, used by the header-struct editor grid.</summary>
 public sealed class HeaderFieldRowViewModel : INotifyPropertyChanged
@@ -55,6 +55,17 @@ public sealed class HeaderFieldRowViewModel : INotifyPropertyChanged
     }
 
     public bool IsValueEditable => Auto == HeaderFieldAuto.None;
+
+    // Instance properties (not static) so plain {Binding TypeOptions}/{Binding AutoOptions}
+    // resolves from each row's DataContext without needing an x:Static markup extension.
+    private static readonly Array TypeOptionsShared = Enum.GetValues(typeof(HeaderFieldType));
+    private static readonly Array AutoOptionsShared = Enum.GetValues(typeof(HeaderFieldAuto));
+
+    /// <summary>Bound as the ItemsSource for the Type ComboBox in the header field editor.</summary>
+    public Array TypeOptions => TypeOptionsShared;
+
+    /// <summary>Bound as the ItemsSource for the Auto ComboBox in the header field editor.</summary>
+    public Array AutoOptions => AutoOptionsShared;
 
     public static HeaderFieldRowViewModel FromDefinition(HeaderFieldDefinition def)
     {

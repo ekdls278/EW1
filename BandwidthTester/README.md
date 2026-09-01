@@ -1,6 +1,9 @@
 # 대역폭 테스트 시뮬레이터 (BandwidthTester)
 
-통신 대역폭 테스트를 위한 모의 소프트웨어입니다. Windows GUI(WPF) + JSON 설정 파일 조합으로 만들었습니다.
+통신 대역폭 테스트를 위한 모의 소프트웨어입니다. Windows GUI + JSON 설정 파일 조합으로 만들었습니다.
+GUI는 두 가지가 있습니다: **BandwidthTester.AvaloniaGui**(권장 — 크로스플랫폼 Avalonia 기반, 이 저장소를
+작성한 Linux 컨테이너에서 실제로 빌드·실행·화면 렌더링까지 검증됨)와 **BandwidthTester.Gui**(WPF, Windows에서만
+빌드 가능해 이 환경에서는 컴파일 검증을 하지 못함).
 
 ## 요구사항 대응표
 
@@ -19,6 +22,7 @@ BandwidthTester/
   BandwidthTester.sln
   src/
     BandwidthTester.Core/   # 크로스플랫폼 핵심 로직 (소켓/헤더/대역폭/설정) - Linux에서도 빌드·테스트됨
+    BandwidthTester.AvaloniaGui/  # Avalonia GUI (크로스플랫폼, win-x64 exe 발행 가능) - 권장
     BandwidthTester.Gui/    # WPF GUI (Windows 전용, net8.0-windows)
     BandwidthTester.Cli/    # 콘솔 버전 (크로스플랫폼, GUI 없이 config.json만으로 실행)
   tests/
@@ -28,11 +32,18 @@ BandwidthTester/
     quickstart-loopback.json   # 바로 실행해볼 수 있는 127.0.0.1 client+server 페어 (다른 PC 없이 자체 테스트용)
 ```
 
-**중요:** `BandwidthTester.Core`, `BandwidthTester.Cli`, `BandwidthTester.Tests`는 이 저장소를 작성한 Linux
-컨테이너에서 실제로 빌드하고 `dotnet test`까지 통과시켜 검증했습니다 (14/14 통과, 실제 루프백 TCP/UDP 송수신 포함).
-`BandwidthTesterCli`는 `quickstart-loopback.json`으로 실제 소켓을 열어 목표 대역폭(2MB/s)에 근접한 실측 처리량이
-나오는 것까지 확인했습니다. 반면 `BandwidthTester.Gui`는 WPF 기반이라 **Windows에서만 빌드/실행**할 수 있어 이
-환경에서는 컴파일 검증을 하지 못했습니다. Windows에서 빌드 후 문제가 있으면 알려주시면 수정하겠습니다.
+**중요:** `BandwidthTester.Core`, `BandwidthTester.Cli`, `BandwidthTester.AvaloniaGui`, `BandwidthTester.Tests`는
+이 저장소를 작성한 Linux 컨테이너에서 실제로 빌드하고 검증했습니다:
+- `dotnet test` 14/14 통과 (실제 루프백 TCP/UDP 송수신 포함).
+- `BandwidthTesterCli`는 `quickstart-loopback.json`으로 실제 소켓을 열어 목표 대역폭(2MB/s)에 근접한 실측
+  처리량이 나오는 것까지 확인.
+- `BandwidthTester.AvaloniaGui`는 Xvfb(가상 디스플레이) + xdotool로 실제 창을 띄우고, 소켓 추가 다이얼로그
+  입력, 20바이트 헤더 합계 실시간 검증, 소켓 목록 그리드 표시, `전체 시작` 클릭 후 상태가 `Connecting`으로
+  바뀌고 로그 패널에 재시도 로그가 실시간으로 찍히는 것까지 화면 캡처로 확인했습니다.
+
+반면 `BandwidthTester.Gui`(WPF)는 **Windows에서만 빌드 가능**해 이 환경에서는 컴파일 검증을 하지 못했습니다.
+Windows에서 빌드 후 문제가 있으면 알려주시면 수정하겠습니다. GUI가 필요하면 `BandwidthTester.AvaloniaGui`를
+우선 사용하시길 권장합니다.
 
 ## 빌드 및 실행
 
@@ -50,7 +61,21 @@ publish/win-x64/BandwidthTesterCli.exe samples/quickstart-loopback.json
 `config.json`에 정의된 모든 소켓(`Enabled: true`인 것)을 시작하고, 1초마다 소켓별 상태/송수신 속도/누적량을 콘솔에
 출력합니다. `Ctrl+C`로 정상 종료됩니다.
 
-### GUI (Windows, .NET 8 SDK 필요)
+### GUI - Avalonia (권장, .NET 8 SDK만 있으면 Windows/Linux/macOS 어디서든 빌드 가능)
+
+```
+cd BandwidthTester
+dotnet run --project src/BandwidthTester.AvaloniaGui
+```
+
+Windows용 실행파일(exe 1개, 약 25MB, .NET 8 Runtime 필요)을 만들려면:
+
+```
+dotnet publish src/BandwidthTester.AvaloniaGui -c Release -r win-x64 --self-contained false ^
+  -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o publish/gui-win-x64
+```
+
+### GUI - WPF (Windows에서만 빌드 가능, 이 환경에서 검증 못함)
 
 ```
 cd BandwidthTester

@@ -1,0 +1,55 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:Avalonia.Controls;assembly=Avalonia.Controls.DataGrid"
+        x:Class="BandwidthTester.AvaloniaGui.MainWindow"
+        Title="대역폭 테스트 시뮬레이터" Width="1300" Height="750"
+        WindowStartupLocation="CenterScreen">
+    <DockPanel Margin="8">
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="6" Margin="0,0,0,8">
+            <Button Name="btnLoad" Content="설정 불러오기" Width="110" Click="BtnLoad_Click"/>
+            <Button Name="btnSave" Content="설정 저장" Width="90" Margin="0,0,14,0" Click="BtnSave_Click"/>
+            <Button Name="btnAdd" Content="소켓 추가" Width="90" Click="BtnAdd_Click"/>
+            <Button Name="btnEdit" Content="선택 편집" Width="90" Click="BtnEdit_Click"/>
+            <Button Name="btnDelete" Content="선택 삭제" Width="90" Margin="0,0,14,0" Click="BtnDelete_Click"/>
+            <Button Name="btnStartAll" Content="전체 시작" Width="90" Click="BtnStartAll_Click"/>
+            <Button Name="btnStopAll" Content="전체 정지" Width="90" Click="BtnStopAll_Click"/>
+        </StackPanel>
+
+        <Grid DockPanel.Dock="Bottom" Height="160" Margin="0,8,0,0" RowDefinitions="Auto,*">
+            <TextBlock Grid.Row="0" Text="로그" FontWeight="Bold" Margin="0,0,0,4"/>
+            <TextBox Name="txtLog" Grid.Row="1" IsReadOnly="True" AcceptsReturn="True"
+                     FontFamily="Consolas,monospace" TextWrapping="NoWrap"
+                     VerticalContentAlignment="Top"/>
+        </Grid>
+
+        <controls:DataGrid Name="gridSockets" AutoGenerateColumns="False" CanUserResizeColumns="True"
+                            SelectionMode="Extended" IsReadOnly="True" RowHeight="28">
+            <controls:DataGrid.Columns>
+                <controls:DataGridTextColumn Header="이름" Binding="{Binding Name}" Width="130"/>
+                <controls:DataGridTextColumn Header="역할/프로토콜" Binding="{Binding RoleProtocol}" Width="110"/>
+                <controls:DataGridTextColumn Header="Local" Binding="{Binding Local}" Width="150"/>
+                <controls:DataGridTextColumn Header="Remote" Binding="{Binding Remote}" Width="150"/>
+                <controls:DataGridTextColumn Header="메시지 크기" Binding="{Binding MessageSize}" Width="80"/>
+                <controls:DataGridTextColumn Header="목표 대역폭" Binding="{Binding Bandwidth}" Width="90"/>
+                <controls:DataGridTextColumn Header="엔디안" Binding="{Binding Endianness}" Width="120"/>
+                <controls:DataGridTextColumn Header="상태" Binding="{Binding Status}" Width="80"/>
+                <controls:DataGridTextColumn Header="TX 속도" Binding="{Binding TxRateText}" Width="90"/>
+                <controls:DataGridTextColumn Header="RX 속도" Binding="{Binding RxRateText}" Width="90"/>
+                <controls:DataGridTextColumn Header="TX 총량" Binding="{Binding TxTotal}" Width="90"/>
+                <controls:DataGridTextColumn Header="RX 총량" Binding="{Binding RxTotal}" Width="90"/>
+                <controls:DataGridTextColumn Header="상대측" Binding="{Binding RemoteEndpoint}" Width="140"/>
+                <controls:DataGridTextColumn Header="오류" Binding="{Binding LastError}" Width="160"/>
+                <controls:DataGridTemplateColumn Header="동작" Width="130">
+                    <controls:DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <Button Content="시작" Width="55" Click="BtnRowStart_Click"/>
+                                <Button Content="정지" Width="55" Click="BtnRowStop_Click"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </controls:DataGridTemplateColumn.CellTemplate>
+                </controls:DataGridTemplateColumn>
+            </controls:DataGrid.Columns>
+        </controls:DataGrid>
+    </DockPanel>
+</Window>

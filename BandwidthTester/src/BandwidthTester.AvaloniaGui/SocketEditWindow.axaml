@@ -1,0 +1,109 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="BandwidthTester.AvaloniaGui.SocketEditWindow"
+        Title="소켓 설정" Width="740" Height="700"
+        WindowStartupLocation="CenterOwner">
+    <DockPanel Margin="10">
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8" Margin="0,10,0,0">
+            <Button Name="btnOk" Content="확인" Width="90" Click="BtnOk_Click"/>
+            <Button Name="btnCancel" Content="취소" Width="90" Click="BtnCancel_Click"/>
+        </StackPanel>
+
+        <ScrollViewer>
+            <StackPanel>
+                <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Margin="0,0,0,10" Padding="8">
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="연결 설정" FontWeight="Bold" Margin="0,0,0,4"/>
+                        <DockPanel>
+                            <TextBlock Text="이름" Width="200" DockPanel.Dock="Left" VerticalAlignment="Center"/>
+                            <TextBox Name="txtName"/>
+                        </DockPanel>
+                        <DockPanel>
+                            <TextBlock Text="역할 (Client/Server)" Width="200" DockPanel.Dock="Left" VerticalAlignment="Center"/>
+                            <ComboBox Name="cmbRole" HorizontalAlignment="Stretch"/>
+                        </DockPanel>
+                        <DockPanel>
+                            <TextBlock Text="프로토콜 (TCP/UDP)" Width="200" DockPanel.Dock="Left" VerticalAlignment="Center"/>
+                            <ComboBox Name="cmbProtocol" HorizontalAlignment="Stretch"/>
+                        </DockPanel>
+                        <DockPanel>
+                            <TextBlock Text="Local IP (0.0.0.0 = 모든 인터페이스)" Width="200" DockPanel.Dock="Left" VerticalAlignment="Center"/>
+                            <TextBox Name="txtLocalIp"/>
+                        </DockPanel>
+                        <DockPanel>
+                            <TextBlock Text="Local Port (Client는 0=자동)" Width="200" DockPanel.Dock="Left" VerticalAlignment="Center"/>
+                            <TextBox Name="txtLocalPort"/>
+                        </DockPanel>
+                        <DockPanel>
+                            <TextBlock Text="Remote IP" Width="200" DockPanel.Dock="Left" VerticalAlignment="Center"/>
+                            <TextBox Name="txtRemoteIp"/>
+                        </DockPanel>
+                        <DockPanel>
+                            <TextBlock Text="Remote Port" Width="200" DockPanel.Dock="Left" VerticalAlignment="Center"/>
+                            <TextBox Name="txtRemotePort"/>
+                        </DockPanel>
+                    </StackPanel>
+                </Border>
+
+                <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Margin="0,0,0,10" Padding="8">
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="송수신 설정" FontWeight="Bold" Margin="0,0,0,4"/>
+                        <DockPanel>
+                            <TextBlock Text="송신 사용 (끄면 수신 전용)" Width="200" DockPanel.Dock="Left" VerticalAlignment="Center"/>
+                            <CheckBox Name="chkSendEnabled" VerticalAlignment="Center"/>
+                        </DockPanel>
+                        <DockPanel>
+                            <TextBlock Text="메시지 크기 (payload, bytes)" Width="200" DockPanel.Dock="Left" VerticalAlignment="Center"/>
+                            <TextBox Name="txtMessageSize"/>
+                        </DockPanel>
+                        <DockPanel>
+                            <TextBlock Text="목표 대역폭 (bytes/sec, 0=무제한)" Width="200" DockPanel.Dock="Left" VerticalAlignment="Center"/>
+                            <TextBox Name="txtBandwidth"/>
+                        </DockPanel>
+                        <DockPanel>
+                            <TextBlock Text="송신 엔디안" Width="200" DockPanel.Dock="Left" VerticalAlignment="Center"/>
+                            <ComboBox Name="cmbSendEndian" HorizontalAlignment="Stretch"/>
+                        </DockPanel>
+                        <DockPanel>
+                            <TextBlock Text="수신 엔디안" Width="200" DockPanel.Dock="Left" VerticalAlignment="Center"/>
+                            <ComboBox Name="cmbRecvEndian" HorizontalAlignment="Stretch"/>
+                        </DockPanel>
+                    </StackPanel>
+                </Border>
+
+                <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Padding="8">
+                    <StackPanel Spacing="6">
+                        <TextBlock Text="20바이트 헤더 구조체 (송신 시 메시지 맨 앞에 붙는 고정 헤더)" FontWeight="Bold"/>
+                        <TextBlock Name="txtHeaderTotal" FontWeight="Bold"/>
+                        <Grid ColumnDefinitions="140,110,60,130,*,60">
+                            <TextBlock Grid.Column="0" Text="이름" FontWeight="SemiBold"/>
+                            <TextBlock Grid.Column="1" Text="타입" FontWeight="SemiBold"/>
+                            <TextBlock Grid.Column="2" Text="크기" FontWeight="SemiBold"/>
+                            <TextBlock Grid.Column="3" Text="자동값" FontWeight="SemiBold"/>
+                            <TextBlock Grid.Column="4" Text="고정값" FontWeight="SemiBold"/>
+                        </Grid>
+                        <ScrollViewer MaxHeight="260" VerticalScrollBarVisibility="Auto">
+                            <ItemsControl Name="itemsHeaderFields">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid ColumnDefinitions="140,110,60,130,*,60" Margin="0,2">
+                                            <TextBox Grid.Column="0" Text="{Binding Name}" Margin="0,0,4,0"/>
+                                            <ComboBox Grid.Column="1" ItemsSource="{Binding TypeOptions}" SelectedItem="{Binding Type}" Margin="0,0,4,0"/>
+                                            <TextBox Grid.Column="2" Text="{Binding Size}" Margin="0,0,4,0"/>
+                                            <ComboBox Grid.Column="3" ItemsSource="{Binding AutoOptions}" SelectedItem="{Binding Auto}" Margin="0,0,4,0"/>
+                                            <TextBox Grid.Column="4" Text="{Binding Value}" IsEnabled="{Binding IsValueEditable}" Margin="0,0,4,0"/>
+                                            <Button Grid.Column="5" Content="삭제" Tag="{Binding}" Click="BtnRemoveHeaderRow_Click"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <Button Name="btnAddField" Content="필드 추가" Width="100" Click="BtnAddField_Click"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+    </DockPanel>
+</Window>
