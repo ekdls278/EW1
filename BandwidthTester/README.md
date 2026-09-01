@@ -20,18 +20,35 @@ BandwidthTester/
   src/
     BandwidthTester.Core/   # 크로스플랫폼 핵심 로직 (소켓/헤더/대역폭/설정) - Linux에서도 빌드·테스트됨
     BandwidthTester.Gui/    # WPF GUI (Windows 전용, net8.0-windows)
+    BandwidthTester.Cli/    # 콘솔 버전 (크로스플랫폼, GUI 없이 config.json만으로 실행)
   tests/
     BandwidthTester.Tests/  # xUnit 테스트 (헤더 인코딩/디코딩, 설정 파일, 실제 TCP/UDP 루프백 통신)
   samples/
-    config.sample.json      # 예제 설정 파일 (TCP/UDP, 서버/클라이언트, 커스텀 헤더 예시 포함)
+    config.sample.json         # 예제 설정 파일 (TCP/UDP, 서버/클라이언트, 커스텀 헤더 예시 포함)
+    quickstart-loopback.json   # 바로 실행해볼 수 있는 127.0.0.1 client+server 페어 (다른 PC 없이 자체 테스트용)
 ```
 
-**중요:** `BandwidthTester.Core`와 `BandwidthTester.Tests`는 이 저장소를 작성한 Linux 컨테이너에서 실제로 빌드하고
-`dotnet test`까지 통과시켜 검증했습니다 (14/14 통과, 실제 루프백 TCP/UDP 송수신 포함). 반면 `BandwidthTester.Gui`는
-WPF 기반이라 **Windows에서만 빌드/실행**할 수 있어 이 환경에서는 컴파일 검증을 하지 못했습니다. Windows에서 빌드 후
-문제가 있으면 알려주시면 수정하겠습니다.
+**중요:** `BandwidthTester.Core`, `BandwidthTester.Cli`, `BandwidthTester.Tests`는 이 저장소를 작성한 Linux
+컨테이너에서 실제로 빌드하고 `dotnet test`까지 통과시켜 검증했습니다 (14/14 통과, 실제 루프백 TCP/UDP 송수신 포함).
+`BandwidthTesterCli`는 `quickstart-loopback.json`으로 실제 소켓을 열어 목표 대역폭(2MB/s)에 근접한 실측 처리량이
+나오는 것까지 확인했습니다. 반면 `BandwidthTester.Gui`는 WPF 기반이라 **Windows에서만 빌드/실행**할 수 있어 이
+환경에서는 컴파일 검증을 하지 못했습니다. Windows에서 빌드 후 문제가 있으면 알려주시면 수정하겠습니다.
 
 ## 빌드 및 실행
+
+### CLI (콘솔, GUI 없이 바로 시험 가능)
+
+```
+cd BandwidthTester
+dotnet publish src/BandwidthTester.Cli -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true -o publish/win-x64
+publish/win-x64/BandwidthTesterCli.exe samples/quickstart-loopback.json
+```
+
+(`--self-contained false`로 빌드한 exe는 대상 PC에 [.NET 8 Runtime](https://dotnet.microsoft.com/download/dotnet/8.0)이
+설치되어 있어야 합니다. `--self-contained true`로 빌드하면 런타임 설치 없이 바로 실행되지만 exe 용량이 약 65MB로 커집니다.)
+
+`config.json`에 정의된 모든 소켓(`Enabled: true`인 것)을 시작하고, 1초마다 소켓별 상태/송수신 속도/누적량을 콘솔에
+출력합니다. `Ctrl+C`로 정상 종료됩니다.
 
 ### GUI (Windows, .NET 8 SDK 필요)
 

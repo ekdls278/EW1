@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{C27D9F60
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BandwidthTester.Tests", "tests\BandwidthTester.Tests\BandwidthTester.Tests.csproj", "{1C72008E-6D82-4500-9C45-7C56F28B304B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BandwidthTester.Cli", "src\BandwidthTester.Cli\BandwidthTester.Cli.csproj", "{53A58243-3DF3-410F-8696-360C62E6E304}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -34,10 +36,15 @@ Global
 		{1C72008E-6D82-4500-9C45-7C56F28B304B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1C72008E-6D82-4500-9C45-7C56F28B304B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1C72008E-6D82-4500-9C45-7C56F28B304B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53A58243-3DF3-410F-8696-360C62E6E304}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53A58243-3DF3-410F-8696-360C62E6E304}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53A58243-3DF3-410F-8696-360C62E6E304}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53A58243-3DF3-410F-8696-360C62E6E304}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{399A3562-AB03-48F7-A675-96A0744A7184} = {779FEDD1-8A92-4FA4-95C2-C01946FC8897}
 		{E456365A-7504-4393-80D0-8527B95C2470} = {779FEDD1-8A92-4FA4-95C2-C01946FC8897}
 		{1C72008E-6D82-4500-9C45-7C56F28B304B} = {C27D9F60-5D88-4E70-925A-AFB63B0119C4}
+		{53A58243-3DF3-410F-8696-360C62E6E304} = {779FEDD1-8A92-4FA4-95C2-C01946FC8897}
 	EndGlobalSection
 EndGlobal
