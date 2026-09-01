@@ -1,7 +1,6 @@
 {
   "Sockets": [
     {
-      "Id": "06858562-3287-4509-bb66-78a05e4cbb7c",
       "Name": "server-tcp-receive",
       "Enabled": true,
       "Role": "Server",
@@ -49,7 +48,6 @@
       }
     },
     {
-      "Id": "a81f479d-aa56-4ed4-8dd3-8f72ddf5568e",
       "Name": "client-tcp-send-10MBps",
       "Enabled": true,
       "Role": "Client",
@@ -97,7 +95,6 @@
       }
     },
     {
-      "Id": "70a61445-01a9-4574-a171-8d9e57ec5059",
       "Name": "server-udp-receive-bigendian",
       "Enabled": true,
       "Role": "Server",
@@ -145,7 +142,6 @@
       }
     },
     {
-      "Id": "e784dd35-958b-4137-8495-de6e91e93b04",
       "Name": "client-udp-send-custom-header",
       "Enabled": true,
       "Role": "Client",

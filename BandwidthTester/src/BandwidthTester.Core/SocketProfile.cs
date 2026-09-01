@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace BandwidthTester.Core;
 
 /// <summary>
@@ -7,6 +9,13 @@ namespace BandwidthTester.Core;
 /// </summary>
 public sealed class SocketProfile
 {
+    /// <summary>
+    /// In-memory identity only (keys the running <see cref="SocketWorker"/> in
+    /// <see cref="SocketSessionManager"/>) - deliberately not serialized to JSON, so
+    /// hand-editing/copy-pasting socket entries in a config file never has to deal with
+    /// stale or duplicate IDs. Every load/deserialize gets a fresh one.
+    /// </summary>
+    [JsonIgnore]
     public Guid Id { get; set; } = Guid.NewGuid();
 
     /// <summary>User-facing label, shown in the socket list.</summary>

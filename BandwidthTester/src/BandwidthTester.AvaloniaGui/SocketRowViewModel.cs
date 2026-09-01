@@ -48,6 +48,13 @@ public sealed class SocketRowViewModel : INotifyPropertyChanged
     public long RxTotal { get => _rxTotal; private set { _rxTotal = value; Raise(); } }
     public string TxRateText => FormatRate((long)_txRate);
     public string RxRateText => FormatRate((long)_rxRate);
+
+    /// <summary>TX/RX send+receive rate combined into one column, to keep the window narrower.</summary>
+    public string RateText => $"{TxRateText} / {RxRateText}";
+
+    /// <summary>TX/RX cumulative bytes combined into one column, to keep the window narrower.</summary>
+    public string TotalText => $"{TxTotal:N0} / {RxTotal:N0}";
+
     public string? RemoteEndpoint { get => _remoteEndpoint; private set { _remoteEndpoint = value; Raise(); } }
     public string? LastError { get => _lastError; private set { _lastError = value; Raise(); } }
 
@@ -75,6 +82,8 @@ public sealed class SocketRowViewModel : INotifyPropertyChanged
             LastError = stats.LastError;
             Raise(nameof(TxRateText));
             Raise(nameof(RxRateText));
+            Raise(nameof(RateText));
+            Raise(nameof(TotalText));
         });
     }
 

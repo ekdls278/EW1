@@ -1,7 +1,6 @@
 {
   "Sockets": [
     {
-      "Id": "11111111-1111-1111-1111-111111111111",
       "Name": "server(receive)",
       "Enabled": true,
       "Role": "Server",
@@ -17,15 +16,38 @@
       "SendEnabled": false,
       "Header": {
         "Fields": [
-          { "Name": "magic", "Type": "UInt32", "Size": 4, "Auto": "None", "Value": "0x42575354" },
-          { "Name": "seq", "Type": "UInt32", "Size": 4, "Auto": "Sequence", "Value": "0" },
-          { "Name": "timestampMs", "Type": "UInt64", "Size": 8, "Auto": "TimestampMs", "Value": "0" },
-          { "Name": "payloadLength", "Type": "UInt32", "Size": 4, "Auto": "PayloadLength", "Value": "0" }
+          {
+            "Name": "magic",
+            "Type": "UInt32",
+            "Size": 4,
+            "Auto": "None",
+            "Value": "0x42575354"
+          },
+          {
+            "Name": "seq",
+            "Type": "UInt32",
+            "Size": 4,
+            "Auto": "Sequence",
+            "Value": "0"
+          },
+          {
+            "Name": "timestampMs",
+            "Type": "UInt64",
+            "Size": 8,
+            "Auto": "TimestampMs",
+            "Value": "0"
+          },
+          {
+            "Name": "payloadLength",
+            "Type": "UInt32",
+            "Size": 4,
+            "Auto": "PayloadLength",
+            "Value": "0"
+          }
         ]
       }
     },
     {
-      "Id": "22222222-2222-2222-2222-222222222222",
       "Name": "client(send-2MBps)",
       "Enabled": true,
       "Role": "Client",
@@ -41,10 +63,34 @@
       "SendEnabled": true,
       "Header": {
         "Fields": [
-          { "Name": "magic", "Type": "UInt32", "Size": 4, "Auto": "None", "Value": "0x42575354" },
-          { "Name": "seq", "Type": "UInt32", "Size": 4, "Auto": "Sequence", "Value": "0" },
-          { "Name": "timestampMs", "Type": "UInt64", "Size": 8, "Auto": "TimestampMs", "Value": "0" },
-          { "Name": "payloadLength", "Type": "UInt32", "Size": 4, "Auto": "PayloadLength", "Value": "0" }
+          {
+            "Name": "magic",
+            "Type": "UInt32",
+            "Size": 4,
+            "Auto": "None",
+            "Value": "0x42575354"
+          },
+          {
+            "Name": "seq",
+            "Type": "UInt32",
+            "Size": 4,
+            "Auto": "Sequence",
+            "Value": "0"
+          },
+          {
+            "Name": "timestampMs",
+            "Type": "UInt64",
+            "Size": 8,
+            "Auto": "TimestampMs",
+            "Value": "0"
+          },
+          {
+            "Name": "payloadLength",
+            "Type": "UInt32",
+            "Size": 4,
+            "Auto": "PayloadLength",
+            "Value": "0"
+          }
         ]
       }
     }

@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
@@ -14,12 +15,54 @@ public partial class MainWindow : Window
     private readonly ObservableCollection<SocketRowViewModel> _rows = new();
     private bool _closeConfirmed;
 
+    // Auto-save target: defaults next to the exe so state survives an app restart with
+    // zero setup. 설정 불러오기/설정 저장 both repoint this so later edits keep autosaving
+    // to whichever file the user is actually working with.
+    private string _configPath = Path.Combine(AppContext.BaseDirectory, "config.json");
+
     public MainWindow()
     {
         InitializeComponent();
         gridSockets.ItemsSource = _rows;
         _manager.LogEmitted += OnLogEmitted;
         Closing += MainWindow_Closing;
+
+        LoadAutoSavedConfigOnStartup();
+    }
+
+    private void LoadAutoSavedConfigOnStartup()
+    {
+        if (!File.Exists(_configPath))
+            return;
+
+        try
+        {
+            var config = ConfigStore.Load(_configPath);
+            foreach (var profile in config.Sockets)
+            {
+                var worker = _manager.Add(profile);
+                _rows.Add(new SocketRowViewModel(worker));
+            }
+            AppendLog($"이전 설정을 자동으로 불러왔습니다 ({config.Sockets.Count}개): {_configPath}");
+        }
+        catch (Exception ex)
+        {
+            AppendLog($"자동 불러오기 실패: {ex.Message}");
+        }
+    }
+
+    /// <summary>Writes the current socket list to <see cref="_configPath"/> right away, so a
+    /// setting change is never at risk of being lost - no separate "저장" click required.</summary>
+    private void SaveConfigSilently()
+    {
+        try
+        {
+            ConfigStore.Save(_manager.ToConfig(), _configPath);
+        }
+        catch (Exception ex)
+        {
+            AppendLog($"자동 저장 실패: {ex.Message}");
+        }
     }
 
     private void OnLogEmitted(SocketWorker worker, string message) => AppendLog(message);
@@ -42,6 +85,7 @@ public partial class MainWindow : Window
         {
             var worker = _manager.Add(created);
             _rows.Add(new SocketRowViewModel(worker));
+            SaveConfigSilently();
         }
     }
 
@@ -76,15 +120,67 @@ public partial class MainWindow : Window
 
         if (wasRunning)
             worker.Start();
+
+        SaveConfigSilently();
     }
+
+    private async void BtnCopy_Click(object? sender, RoutedEventArgs e)
+    {
+        if (gridSockets.SelectedItem is not SocketRowViewModel row)
+        {
+            await SimpleMessageWindow.ShowAsync(this, "복사할 소켓을 선택하세요.");
+            return;
+        }
+
+        var copy = ClonedProfile(row.Profile);
+        var worker = _manager.Add(copy);
+        var newRow = new SocketRowViewModel(worker);
+
+        int index = _rows.IndexOf(row);
+        if (index >= 0)
+            _rows.Insert(index + 1, newRow); // right next to the original, not at the end
+        else
+            _rows.Add(newRow);
+        gridSockets.SelectedItem = newRow;
+
+        SaveConfigSilently();
+    }
+
+    private static SocketProfile ClonedProfile(SocketProfile source) => new()
+    {
+        // Id is intentionally left at its default (a fresh Guid) so the copy is a distinct socket.
+        Name = $"{source.Name} - 복사",
+        Role = source.Role,
+        Protocol = source.Protocol,
+        LocalIp = source.LocalIp,
+        LocalPort = source.LocalPort,
+        RemoteIp = source.RemoteIp,
+        RemotePort = source.RemotePort,
+        SendByteOrder = source.SendByteOrder,
+        ReceiveByteOrder = source.ReceiveByteOrder,
+        MessageSize = source.MessageSize,
+        TargetBandwidthBytesPerSec = source.TargetBandwidthBytesPerSec,
+        SendEnabled = source.SendEnabled,
+        Header = new HeaderDefinition
+        {
+            Fields = source.Header.Fields
+                .Select(f => new HeaderFieldDefinition { Name = f.Name, Type = f.Type, Size = f.Size, Auto = f.Auto, Value = f.Value })
+                .ToList()
+        }
+    };
 
     private async void BtnDelete_Click(object? sender, RoutedEventArgs e)
     {
-        foreach (var row in gridSockets.SelectedItems.Cast<SocketRowViewModel>().ToList())
+        var selected = gridSockets.SelectedItems.Cast<SocketRowViewModel>().ToList();
+        if (selected.Count == 0)
+            return;
+
+        foreach (var row in selected)
         {
             await _manager.RemoveAsync(row.Profile.Id);
             _rows.Remove(row);
         }
+        SaveConfigSilently();
     }
 
     private void BtnStartAll_Click(object? sender, RoutedEventArgs e) => _manager.StartAll();
@@ -123,6 +219,7 @@ public partial class MainWindow : Window
             _rows.Clear();
             foreach (var worker in _manager.Workers)
                 _rows.Add(new SocketRowViewModel(worker));
+            _configPath = path; // further edits autosave here from now on
             AppendLog($"설정 {config.Sockets.Count}개 소켓을 불러왔습니다: {path}");
         }
         catch (Exception ex)
@@ -146,6 +243,7 @@ public partial class MainWindow : Window
         try
         {
             ConfigStore.Save(_manager.ToConfig(), file.Path.LocalPath);
+            _configPath = file.Path.LocalPath; // further edits autosave here from now on
             AppendLog($"설정을 저장했습니다: {file.Path.LocalPath}");
         }
         catch (Exception ex)
@@ -157,7 +255,9 @@ public partial class MainWindow : Window
     private async void MainWindow_Closing(object? sender, WindowClosingEventArgs e)
     {
         if (_closeConfirmed)
+        {
             return;
+        }
 
         e.Cancel = true;
         await _manager.StopAllAsync();

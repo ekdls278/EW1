@@ -137,6 +137,22 @@ public sealed class SocketWorker : IAsyncDisposable
     private static AddressFamily FamilyOf(string ip) =>
         IPAddress.Parse(ip).AddressFamily;
 
+    /// <summary>
+    /// Tunes a socket for sustained bandwidth-test throughput: a generous send/receive
+    /// buffer (the OS default is often just tens of KB, which throttles throughput on
+    /// higher-bandwidth-delay-product links) and, for TCP, Nagle's algorithm disabled so
+    /// paced sends actually go out on schedule instead of being coalesced/delayed - a
+    /// bandwidth *test* tool should never be the bottleneck it's trying to measure.
+    /// </summary>
+    private static void TuneForThroughput(Socket socket)
+    {
+        const int bufferSize = 1 << 20; // 1 MB
+        socket.SendBufferSize = bufferSize;
+        socket.ReceiveBufferSize = bufferSize;
+        if (socket.ProtocolType == ProtocolType.Tcp)
+            socket.NoDelay = true;
+    }
+
     private async Task RunAsync(CancellationToken ct)
     {
         try
@@ -214,6 +230,7 @@ public sealed class SocketWorker : IAsyncDisposable
 
     private async Task HandleTcpConnectionAsync(Socket socket, CancellationToken ct)
     {
+        TuneForThroughput(socket);
         _remoteEndpointText = socket.RemoteEndPoint?.ToString();
         SetStatus(WorkerStatus.Connected);
         Log($"connected: local={socket.LocalEndPoint} remote={socket.RemoteEndPoint}");
@@ -297,6 +314,7 @@ public sealed class SocketWorker : IAsyncDisposable
     private async Task RunUdpAsync(CancellationToken ct)
     {
         using var socket = new Socket(FamilyOf(Profile.LocalIp), SocketType.Dgram, ProtocolType.Udp);
+        TuneForThroughput(socket);
         socket.Bind(new IPEndPoint(IPAddress.Parse(Profile.LocalIp), Profile.LocalPort));
         SetStatus(WorkerStatus.Connected);
         Log($"udp bound on {socket.LocalEndPoint}");
