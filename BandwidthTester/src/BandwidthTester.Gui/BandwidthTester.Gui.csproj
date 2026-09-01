@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    WPF only builds/runs on Windows. This project cannot be built or tested on the
+    Linux/macOS container this repository was authored in - only BandwidthTester.Core
+    and BandwidthTester.Tests were compiled and tested there. Build this project with
+    the .NET 8 SDK on Windows (see README.md for instructions).
+  -->
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon />
+    <AssemblyName>BandwidthTester</AssemblyName>
+    <RootNamespace>BandwidthTester.Gui</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BandwidthTester.Core\BandwidthTester.Core.csproj" />
+  </ItemGroup>
+
+</Project>

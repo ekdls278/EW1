@@ -1,0 +1,93 @@
+<Window x:Class="BandwidthTester.Gui.SocketEditWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="소켓 설정" Width="740" Height="700"
+        WindowStartupLocation="CenterOwner">
+    <DockPanel Margin="10">
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+            <Button x:Name="btnOk" Content="확인" Width="90" Margin="0,0,8,0" Click="BtnOk_Click"/>
+            <Button x:Name="btnCancel" Content="취소" Width="90" IsCancel="True" Click="BtnCancel_Click"/>
+        </StackPanel>
+
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <GroupBox Header="연결 설정" Margin="0,0,0,10">
+                    <StackPanel Margin="8">
+                        <DockPanel Margin="0,4">
+                            <TextBlock Text="이름" Width="180" DockPanel.Dock="Left" VerticalAlignment="Center"/>
+                            <TextBox x:Name="txtName"/>
+                        </DockPanel>
+                        <DockPanel Margin="0,4">
+                            <TextBlock Text="역할 (Client/Server)" Width="180" DockPanel.Dock="Left" VerticalAlignment="Center"/>
+                            <ComboBox x:Name="cmbRole"/>
+                        </DockPanel>
+                        <DockPanel Margin="0,4">
+                            <TextBlock Text="프로토콜 (TCP/UDP)" Width="180" DockPanel.Dock="Left" VerticalAlignment="Center"/>
+                            <ComboBox x:Name="cmbProtocol"/>
+                        </DockPanel>
+                        <DockPanel Margin="0,4">
+                            <TextBlock Text="Local IP (0.0.0.0 = 모든 인터페이스)" Width="180" DockPanel.Dock="Left" VerticalAlignment="Center"/>
+                            <TextBox x:Name="txtLocalIp"/>
+                        </DockPanel>
+                        <DockPanel Margin="0,4">
+                            <TextBlock Text="Local Port (Client는 0=자동)" Width="180" DockPanel.Dock="Left" VerticalAlignment="Center"/>
+                            <TextBox x:Name="txtLocalPort"/>
+                        </DockPanel>
+                        <DockPanel Margin="0,4">
+                            <TextBlock Text="Remote IP" Width="180" DockPanel.Dock="Left" VerticalAlignment="Center"/>
+                            <TextBox x:Name="txtRemoteIp"/>
+                        </DockPanel>
+                        <DockPanel Margin="0,4">
+                            <TextBlock Text="Remote Port" Width="180" DockPanel.Dock="Left" VerticalAlignment="Center"/>
+                            <TextBox x:Name="txtRemotePort"/>
+                        </DockPanel>
+                    </StackPanel>
+                </GroupBox>
+
+                <GroupBox Header="송수신 설정" Margin="0,0,0,10">
+                    <StackPanel Margin="8">
+                        <DockPanel Margin="0,4">
+                            <TextBlock Text="송신 사용 (끄면 수신 전용)" Width="180" DockPanel.Dock="Left" VerticalAlignment="Center"/>
+                            <CheckBox x:Name="chkSendEnabled" VerticalAlignment="Center"/>
+                        </DockPanel>
+                        <DockPanel Margin="0,4">
+                            <TextBlock Text="메시지 크기 (payload, bytes)" Width="180" DockPanel.Dock="Left" VerticalAlignment="Center"/>
+                            <TextBox x:Name="txtMessageSize"/>
+                        </DockPanel>
+                        <DockPanel Margin="0,4">
+                            <TextBlock Text="목표 대역폭 (bytes/sec, 0=무제한)" Width="180" DockPanel.Dock="Left" VerticalAlignment="Center"/>
+                            <TextBox x:Name="txtBandwidth"/>
+                        </DockPanel>
+                        <DockPanel Margin="0,4">
+                            <TextBlock Text="송신 엔디안" Width="180" DockPanel.Dock="Left" VerticalAlignment="Center"/>
+                            <ComboBox x:Name="cmbSendEndian"/>
+                        </DockPanel>
+                        <DockPanel Margin="0,4">
+                            <TextBlock Text="수신 엔디안" Width="180" DockPanel.Dock="Left" VerticalAlignment="Center"/>
+                            <ComboBox x:Name="cmbRecvEndian"/>
+                        </DockPanel>
+                    </StackPanel>
+                </GroupBox>
+
+                <GroupBox Header="20바이트 헤더 구조체 (송신 시 메시지 맨 앞에 붙는 고정 헤더)">
+                    <StackPanel Margin="8">
+                        <TextBlock x:Name="txtHeaderTotal" Margin="0,0,0,6" FontWeight="Bold"/>
+                        <DataGrid x:Name="gridHeaderFields" AutoGenerateColumns="False" CanUserAddRows="False" Height="220" RowHeight="26">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="이름" Binding="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Width="120"/>
+                                <DataGridComboBoxColumn x:Name="colType" Header="타입" SelectedItemBinding="{Binding Type, UpdateSourceTrigger=PropertyChanged}" Width="90"/>
+                                <DataGridTextColumn Header="크기(Bytes 타입 전용)" Binding="{Binding Size, UpdateSourceTrigger=PropertyChanged}" Width="110"/>
+                                <DataGridComboBoxColumn x:Name="colAuto" Header="자동값" SelectedItemBinding="{Binding Auto, UpdateSourceTrigger=PropertyChanged}" Width="110"/>
+                                <DataGridTextColumn Header="고정값 (숫자 / 0x.. / hex bytes)" Binding="{Binding Value, UpdateSourceTrigger=PropertyChanged}" Width="*"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                            <Button x:Name="btnAddField" Content="필드 추가" Width="100" Margin="0,0,8,0" Click="BtnAddField_Click"/>
+                            <Button x:Name="btnRemoveField" Content="필드 삭제" Width="100" Click="BtnRemoveField_Click"/>
+                        </StackPanel>
+                    </StackPanel>
+                </GroupBox>
+            </StackPanel>
+        </ScrollViewer>
+    </DockPanel>
+</Window>

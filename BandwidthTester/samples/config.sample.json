@@ -1,0 +1,203 @@
+{
+  "Sockets": [
+    {
+      "Id": "06858562-3287-4509-bb66-78a05e4cbb7c",
+      "Name": "server-tcp-receive",
+      "Enabled": true,
+      "Role": "Server",
+      "Protocol": "Tcp",
+      "LocalIp": "0.0.0.0",
+      "LocalPort": 9000,
+      "RemoteIp": "0.0.0.0",
+      "RemotePort": 0,
+      "SendByteOrder": "LittleEndian",
+      "ReceiveByteOrder": "LittleEndian",
+      "MessageSize": 1024,
+      "TargetBandwidthBytesPerSec": 0,
+      "SendEnabled": false,
+      "Header": {
+        "Fields": [
+          {
+            "Name": "magic",
+            "Type": "UInt32",
+            "Size": 4,
+            "Auto": "None",
+            "Value": "0x42575354"
+          },
+          {
+            "Name": "seq",
+            "Type": "UInt32",
+            "Size": 4,
+            "Auto": "Sequence",
+            "Value": "0"
+          },
+          {
+            "Name": "timestampMs",
+            "Type": "UInt64",
+            "Size": 8,
+            "Auto": "TimestampMs",
+            "Value": "0"
+          },
+          {
+            "Name": "payloadLength",
+            "Type": "UInt32",
+            "Size": 4,
+            "Auto": "PayloadLength",
+            "Value": "0"
+          }
+        ]
+      }
+    },
+    {
+      "Id": "a81f479d-aa56-4ed4-8dd3-8f72ddf5568e",
+      "Name": "client-tcp-send-10MBps",
+      "Enabled": true,
+      "Role": "Client",
+      "Protocol": "Tcp",
+      "LocalIp": "0.0.0.0",
+      "LocalPort": 0,
+      "RemoteIp": "192.168.0.10",
+      "RemotePort": 9000,
+      "SendByteOrder": "LittleEndian",
+      "ReceiveByteOrder": "LittleEndian",
+      "MessageSize": 1024,
+      "TargetBandwidthBytesPerSec": 10000000,
+      "SendEnabled": true,
+      "Header": {
+        "Fields": [
+          {
+            "Name": "magic",
+            "Type": "UInt32",
+            "Size": 4,
+            "Auto": "None",
+            "Value": "0x42575354"
+          },
+          {
+            "Name": "seq",
+            "Type": "UInt32",
+            "Size": 4,
+            "Auto": "Sequence",
+            "Value": "0"
+          },
+          {
+            "Name": "timestampMs",
+            "Type": "UInt64",
+            "Size": 8,
+            "Auto": "TimestampMs",
+            "Value": "0"
+          },
+          {
+            "Name": "payloadLength",
+            "Type": "UInt32",
+            "Size": 4,
+            "Auto": "PayloadLength",
+            "Value": "0"
+          }
+        ]
+      }
+    },
+    {
+      "Id": "70a61445-01a9-4574-a171-8d9e57ec5059",
+      "Name": "server-udp-receive-bigendian",
+      "Enabled": true,
+      "Role": "Server",
+      "Protocol": "Udp",
+      "LocalIp": "0.0.0.0",
+      "LocalPort": 9100,
+      "RemoteIp": "0.0.0.0",
+      "RemotePort": 0,
+      "SendByteOrder": "BigEndian",
+      "ReceiveByteOrder": "BigEndian",
+      "MessageSize": 512,
+      "TargetBandwidthBytesPerSec": 0,
+      "SendEnabled": false,
+      "Header": {
+        "Fields": [
+          {
+            "Name": "magic",
+            "Type": "UInt32",
+            "Size": 4,
+            "Auto": "None",
+            "Value": "0x42575354"
+          },
+          {
+            "Name": "seq",
+            "Type": "UInt32",
+            "Size": 4,
+            "Auto": "Sequence",
+            "Value": "0"
+          },
+          {
+            "Name": "timestampMs",
+            "Type": "UInt64",
+            "Size": 8,
+            "Auto": "TimestampMs",
+            "Value": "0"
+          },
+          {
+            "Name": "payloadLength",
+            "Type": "UInt32",
+            "Size": 4,
+            "Auto": "PayloadLength",
+            "Value": "0"
+          }
+        ]
+      }
+    },
+    {
+      "Id": "e784dd35-958b-4137-8495-de6e91e93b04",
+      "Name": "client-udp-send-custom-header",
+      "Enabled": true,
+      "Role": "Client",
+      "Protocol": "Udp",
+      "LocalIp": "0.0.0.0",
+      "LocalPort": 0,
+      "RemoteIp": "192.168.0.20",
+      "RemotePort": 9100,
+      "SendByteOrder": "BigEndian",
+      "ReceiveByteOrder": "BigEndian",
+      "MessageSize": 512,
+      "TargetBandwidthBytesPerSec": 5000000,
+      "SendEnabled": true,
+      "Header": {
+        "Fields": [
+          {
+            "Name": "syncWord",
+            "Type": "Bytes",
+            "Size": 2,
+            "Auto": "None",
+            "Value": "A5A5"
+          },
+          {
+            "Name": "deviceId",
+            "Type": "UInt16",
+            "Size": 2,
+            "Auto": "None",
+            "Value": "1001"
+          },
+          {
+            "Name": "seq",
+            "Type": "UInt32",
+            "Size": 4,
+            "Auto": "Sequence",
+            "Value": "0"
+          },
+          {
+            "Name": "timestampMs",
+            "Type": "UInt64",
+            "Size": 8,
+            "Auto": "TimestampMs",
+            "Value": "0"
+          },
+          {
+            "Name": "payloadLength",
+            "Type": "UInt32",
+            "Size": 4,
+            "Auto": "PayloadLength",
+            "Value": "0"
+          }
+        ]
+      }
+    }
+  ]
+}
